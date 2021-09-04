@@ -1,0 +1,25 @@
+language: generic
+
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t xogml9365/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true xogml9365/react-test npm test
+
+after_success:
+  - docker build -t xogml9365/multi-client ./client
+  - docker build -t xogml9365/multi-nginx ./nginx
+  - docker build -t xogml9365/multi-server ./server
+  - docker build -t xogml9365/multi-worker ./worker
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Upload Images to Docker hub
+  - docker push xogml9365/multi-client
+  - docker push xogml9365/multi-nginx
+  - docker push xogml9365/multi-server
+  - docker push xogml9365/multi-worker
+  
