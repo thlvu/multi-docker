@@ -2,7 +2,5 @@ FROM node:alpine
 WORKDIR '/usr/app'
 COPY ./package.json ./
 RUN npm install
-COPY ./node_modules ./node_modules
-COPY ./public ./public
-COPY ./src ./src
+COPY . .
 CMD ["npm", "run", "start"]
